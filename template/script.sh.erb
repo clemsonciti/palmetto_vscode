@@ -9,6 +9,8 @@ if ! working_dir.exist?
     working_dir = Pathname.new(ENV['HOME'])
 elsif working_dir.file?
     working_dir = working_dir.parent
+else
+    working_dir = working_dir
 end
 %>
 
@@ -18,11 +20,8 @@ mkdir -p "$CODE_SERVER_DATAROOT/extensions"
 # Expose the password to the server.
 export PASSWORD="$password"
 
-# Print compute node.
-#echo "$(date): Running on compute node ${compute_node}:$port"
-
-# VSCode complains that system git is too old.
-#module load project/ondemand git app_code_server/<%= context.version %>
+# Loading modules.
+module load <%= context.pbs_modules %>
 
 #
 # Start Code Server.
@@ -30,7 +29,7 @@ export PASSWORD="$password"
 echo "$(date): Started code-server"
 echo ""
 
-/software/external/code-server/3.10.2/bin/code-server \
+/software/external/code-server/<%= context.version %>/bin/code-server \
     --auth="password" \
     --bind-addr="0.0.0.0:${port}" \
     --disable-telemetry \
