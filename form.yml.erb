@@ -20,105 +20,85 @@
 cluster: "palmetto"
 
 attributes:
+
   # Palmetto PBS specific options
   pbs_select:
     label: "Number of resource chunks (select)"
-    widget: "select"
     value: "1"
-    options:
-      - ["1","1"]
-      - ["2","2"]
-      - ["4","4"]
-      - ["8","8"]
       
   pbs_ncpus:
     label: "CPU cores per chunk (ncpus)"
-    widget: "select"
     value: "1"
-    options:
-      - ["1","1"]
-      - ["2","2"]
-      - ["4","4"]
-      - ["8","8"]
-      - ["16","16"]
-      - ["20","20"]
-      - ["24","24"]
-      - ["28","28"]
-      - ["32 (bigmem queue only)","32"]
-      - ["40","40"]
-      - ["64 (bigmem queue only)","64"]
-      - ["80 (bigmem queue only)","80"]
+    help: |
+      <small> - Typical Palmetto compute nodes have <b>8, 12, 16, 20, 24, 28, 40, and 56</b> cores.<br>
+      - DGX nodes have <b>128</b> cores.<br>
+      - Bigmem nodes have <b>24, 32, 40, and 80</b> cores.
+      - <b>Users can request any number of cores that is smaller than the number of available cores.</b>
+      </small>
       
   pbs_mem:
     label: "Amount of memory per chunk (mem)"
-    widget: "select"
     value: "1gb"
-    options:
-      - ["1gb","1gb"]
-      - ["2gb","2gb"]
-      - ["4gb","4gb"]
-      - ["6gb","6gb"]
-      - ["14gb","14gb"]
-      - ["30gb","30gb"]
-      - ["62gb","62gb"]
-      - ["120gb","120gb"]
-      - ["370gb","370gb"]
-      - ["505gb (bigmem queue only)","505gb"]
-      - ["750gb (bigmem queue only)","750gb"]
-      - ["1000gb (bigmem queue only)","1000gb"]      
-      - ["1500gb (bigmem queue only)","1500gb"]
-      - ["2000gb (bigmem queue only)","2000gb"]
+    help: |
+      <small> - Typical Palmetto compute nodes have <b>15gb, 30gb, 46gb, 62gb, 125gb, 372gb, 748gb, and 990gb</b> of memory.<br>
+      - DGX nodes have <b>990gb</b> of memory.<br>
+      - Bigmem nodes have <b>500gb and 750gb</b> and <b>1tb and 1.5tb</b> of memory.
+      </small>
 
   pbs_ngpus:
     label: "Number of GPUs per chunk (ngpus)"
     widget: "select"
     value: "0"
     options:
-      - ["None","0"]
-      - ["1","1"]
-      - ["2","2"]
-      - ["4","4"]
+      - ["None",""]
+      - ["1",":ngpus=1"]
+      - ["2",":ngpus=2"]
+      - ["4",":ngpus=4"]
 
   pbs_gpu_model:
     label: "GPU Model (gpu_model)"
     widget: "select"
     value: "none"
     options:
-      - ["None","any"]
-      - ["Any", "any"]
-      - ["K20","k20"]
-      - ["K40","k40"]
-      - ["P100","p100"]
-      - ["V100","v100"]
-      - ["V100 with NVLink","v100nv"]
+      - ["None",""]
+      - ["Any", ":gpu_model=any"]
+      - ["K20",":gpu_model=k20"]
+      - ["K40",":gpu_model=k40"]
+      - ["P100",":gpu_model=p100"]
+      - ["V100",":gpu_model=v100"]
+      - ["V100 with NVLink",":gpu_model=v100nv"]
 
   pbs_interconnect:
     label: "Interconnect"
     widget: "select"
     value: "any"
     options:
-      - ["any","any"]
-      - ["1g - Ethernet older phases 1-6","1g"]
-      - ["1ge - Ethernet phase 0 (bigmem queue","1ge"]
-      - ["10g - Ethernet phase 7-19 and phase 0 (bigmem queue)","10ge"]
-      - ["25g - Ethernet phase 7-19","25ge"]
-      - ["56g - Ethernet phase 7-19","56g"]
-      - ["100g - Ethernet phase 18 and above","100g"]
+      - ["any",""]
+      - ["1g - Ethernet older phases 1-6",":interconnect=1g"]
+      - ["10g - Ethernet phase 7-18 and phase 0 (bigmem queue)",":interconnect=10ge"]
+      - ["25g - Ethernet phase 18b-27",":interconnect=25ge"]
+      - ["56g - Ethernet phase 7-17",":interconnect=56g"]
+      - ["fdr - Infiniband phase 7-17",":interconnect=fdr"]
+      - ["hdr - Infiniband phase 18 and above",":interconnect=hdr"]
+      - ["100g - Ethernet phase 18 and above",":interconnect=100g"]
 
   pbs_walltime:
     label: "Walltime"
-    widget: "select"
     value: "00:30:00"
-    options:
-      - ["30 minutes","00:30:00"]
-      - ["1 hours","01:00:00"]
-      - ["2 hours","02:00:00"]
-      - ["4 hours","04:00:00"]
-      - ["16 hours","16:00:00"]
-      - ["24 hours","24:00:00"]
-      - ["72 hours","72:00:00"]
+    help: |
+      <small> - Walltime format is <b>hh:mm:ss</b>.<br>
+      - Phase 1 through 6 nodes can be reserved up to 336 hours.<br> 
+      - Phase 7 through 27 nodes can be reserved up to 72 hours. 
+      </small>
       
-
+  pbs_extras:
+    label: "Extra PBS resource allocation request"
+    value: ""
+    help: |
+      <small>- Enter the additional resource request just like how you would in a command line environment.<br>
+      - Each request should start with a colon <b>:</b> sign. <br>
+      - For example: <b>:chip_type=e5-2665</b></small>
+      
   pbs_queue:
     label: "Queue"
     required: true
@@ -144,13 +124,18 @@ attributes:
   pbs_modules:
     label: "List of modules to be loaded, separate by an empty space"
     value: ""
+    help: |
+      <small> Provide a space-separated list of modules to be loaded. <br>
+      - For example: <b>openjdk/11.0.2-gcc/8.3.1 jags/4.3.0-gcc/8.3.1</b>
+      </small>
 
   version:
     widget: select
     label: "Codeserver Version"
+    value: "3.10.2"
     options:
       - ["3.10.2", "3.10.2"]
-      
+
   working_dir:
     label: "Absolute path to working directory"
     data-filepicker: true
@@ -167,6 +152,7 @@ form:
   - pbs_interconnect
   - pbs_walltime
   - pbs_queue
+  - pbs_extras
   - pbs_modules
   - working_dir
   - version

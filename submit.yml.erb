@@ -33,9 +33,8 @@ batch_connect:
 script:
   native:
     - "-N"
-    - "jserver"
+    - "vscode-server"
     - "-q"
     - "<%= pbs_queue %>"
     - "-l"
-    - "select=<%= pbs_select %>:ncpus=<%= pbs_ncpus %>:mpiprocs=<%= pbs_ncpus %>:mem=<%= pbs_mem %>:interconnect=<%= pbs_interconnect %>:ngpus=<%= pbs_ngpus %>:gpu_model=<%= pbs_gpu_model %>,walltime=<%= pbs_walltime %>"
-
+    - "select=<%= pbs_select %>:ncpus=<%= pbs_ncpus %>:mpiprocs=<%= pbs_ncpus %>:mem=<%= pbs_mem %><%= pbs_interconnect %><%= pbs_ngpus %><%= pbs_gpu_model %><%= pbs_extras %>,walltime=<%= pbs_walltime %>"
