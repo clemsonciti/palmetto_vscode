@@ -1,22 +1,3 @@
-<%-
-  # get _list_partitions
-  p_cmd = "/opt/pbs/default/bin/qstat -Q | grep Rou | grep -v -E 'a100|p100|v100|k240|c1|c2|osg' | awk '{print $1}' | sort"
-  begin
-    output, status = Open3.capture2e(p_cmd)
-    if status.success?
-      _list_partitions = output.split("\n").map(&:strip).reject(&:blank?).sort
-    else
-      raise output
-    end
-  rescue => e
-    _list_partitions = []
-    p_error = e.message.strip
-  end
-
--%>
----
-
-
 cluster: "palmetto"
 
 attributes:
@@ -102,24 +83,14 @@ attributes:
   pbs_queue:
     label: "Queue"
     required: true
-    value: "work1"
     help: |
       <small>Queue to submit the job to</small>
-    <%- if p_error -%>
-      <span class="text-danger">Error when parsing queues:</span>
-      ```
-      <%= p_error.gsub("\n", "\n      ") %>
-      ```
-    <%- end -%>
-    <%- if _list_partitions.blank? -%>
-    widget: text_field
-    <%- else -%>
     widget: select
+    value: "work1"
     options:
-      <%- _list_partitions.each do |q| -%>
-      - [ "<%= q %>", "<%= q %>" ]
-      <%- end -%>
-    <%- end -%>
+      <%- CustomQueues.queues.each do |g| %>
+      - "<%= g %>"
+      <%- end %>
 
   pbs_modules:
     label: "List of modules to be loaded, separate by an empty space"
