@@ -89,7 +89,7 @@ attributes:
     value: "work1"
     options:
       <%- CustomQueues.queues.each do |g| %>
-      - "<%= g %>"
+      - ["<%= g %>","<%= g %>"]
       <%- end %>
 
   pbs_modules:
