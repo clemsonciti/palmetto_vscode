@@ -9,6 +9,9 @@ attributes:
       
   pbs_ncpus:
     label: "CPU cores per chunk (ncpus)"
+    widget: "number_field"
+    min: "1"
+    max: "128"
     value: "1"
     help: |
       <small> - Typical Palmetto compute nodes have <b>8, 12, 16, 20, 24, 28, 40, and 56</b> cores.<br>
